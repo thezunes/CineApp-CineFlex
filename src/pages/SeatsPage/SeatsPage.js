@@ -1,7 +1,39 @@
 import styled from "styled-components"
+ import axios from 'axios'
+import { useState, useEffect } from 'react'
+import { Link, useParams } from "react-router-dom";
 
 export default function SeatsPage() {
 
+
+    const {idSessao2} = useParams()
+    const path=window.location.pathname;
+    const parts = path.split('/');  
+    const idSessao = parts[2];
+    const [assentos, setAssentos] = useState([])
+    const [infoFilme, setInfoFilme] = useState([])
+    const [infoSessao, setInfoSessao] = useState([])
+
+
+
+
+    useEffect(() => { 
+        const url = `https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSessao}/seats`
+        const promise = axios.get(url)
+        promise.then(res => setAssentos(res.data))
+        promise.catch(err => alert(`Houve um erro na requisição dos dados. ${err}`))
+        }, [])
+
+    useEffect(() => { 
+        const url = `https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSessao}/seats`
+        const promise = axios.get(url)
+        promise.then(res => setInfoFilme(res.data.movie))
+        promise.then(res => setInfoSessao(res.data.day))
+        promise.catch(err => alert(`Houve um erro na requisição dos dados. ${err}`))
+        }, [])
+
+ 
+ 
     return (
         <PageContainer>
             Selecione o(s) assento(s)
@@ -41,11 +73,11 @@ export default function SeatsPage() {
 
             <FooterContainer>
                 <div>
-                    <img src={"https://br.web.img2.acsta.net/pictures/22/05/16/17/59/5165498.jpg"} alt="poster" />
+                    <img src={infoFilme.posterURL} alt="poster" />
                 </div>
                 <div>
-                    <p>Tudo em todo lugar ao mesmo tempo</p>
-                    <p>Sexta - 14h00</p>
+                    <p>{infoFilme.title}</p>
+                    <p>{infoSessao.weekday} - {assentos.name}</p>
                 </div>
             </FooterContainer>
 
