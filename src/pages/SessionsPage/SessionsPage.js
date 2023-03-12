@@ -1,6 +1,29 @@
+import axios from "axios"
+import { useEffect } from "react"
+import { Link, useParams } from "react-router-dom"
 import styled from "styled-components"
 
+
+
+
 export default function SessionsPage() {
+
+
+    useEffect(() => { 
+        const url = `https://mock-api.driven.com.br/api/v8/cineflex/movies/`
+        const promise = axios.get(url)
+        promise.then((res) => { 
+        console.log(res.data[0])
+        
+         })
+        }, [])
+
+
+    const {idFilme} = useParams()
+
+    if(idFilme > 20 || isNaN(idFilme) ) {
+        return alert("Esse não é um link válido")
+    }
 
     return (
         <PageContainer>

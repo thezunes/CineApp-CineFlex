@@ -1,21 +1,29 @@
 import styled from "styled-components"
 import axios from 'axios'
 import { useState, useEffect } from 'react'
+import { Link, useParams } from "react-router-dom";
 
 
-export default function HomePage() {
 
+export default function HomePage(props) {
 
+    const {idFilme} = useParams()
     const [listaFilmes, setListaFilmes] = useState([]);
+
+    function teste() {
+        console.log("teste")
+    }
+
 
     useEffect(() => { 
         const promise = axios.get('https://mock-api.driven.com.br/api/v8/cineflex/movies')
         promise.then((res) => { 
         setListaFilmes(res.data)
+        res.data = props.filmeSelecionado
+        console.log(props.filmeSelecionado)
          })
         }, [])
    
-
     
     return (
         <PageContainer>
@@ -23,9 +31,14 @@ export default function HomePage() {
 
             <ListContainer>
                 { listaFilmes.map((img) => 
+                <Link to={`/sessions/${img.id}`} >
+                
                 <MovieContainer>
-                    <img src={img.posterURL} key={img.id}  alt={img.title} />
+                    <img onClick={teste} src={img.posterURL} alt={img.title} key={img.id} />
+
                 </MovieContainer>
+
+                </Link>
                 )}
             </ListContainer>
 
