@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import styled from "styled-components"
 
@@ -7,16 +7,28 @@ import styled from "styled-components"
 
 
 export default function SessionsPage() {
+    const [footer, setFooter] = useState();
+    const path=window.location.pathname;
+    const parts = path.split('/');  
+    const posicaoObjeto = parts[2] - 1; 
+    const [dados, setDados] = useState([]); // AQUI ESTÁ ARMAZENADO AS INFORMAÇÕES DO FILME ESCOLHIDO
+    const [sessao, setSessao] = useState([]);
 
 
     useEffect(() => { 
-        const url = `https://mock-api.driven.com.br/api/v8/cineflex/movies/`
+        const url = "https://mock-api.driven.com.br/api/v8/cineflex/movies/"
         const promise = axios.get(url)
-        promise.then((res) => { 
-        console.log(res.data[0])
-        
-         })
+        promise.then(res => setDados(res.data[posicaoObjeto]))
+        promise.catch(err => alert(`Houve um erro na requisição dos dados. ${err}`))
+
         }, [])
+
+        useEffect(() => { 
+            const url = `https://mock-api.driven.com.br/api/v8/cineflex/movies/${parts[2]}/showtimes`
+            const promise = axios.get(url)
+            promise.then(res => setSessao(res.data.days))
+            promise.catch(err => alert(`Houve um erro na requisição dos dados. ${err}`))
+            }, [])
 
 
     const {idFilme} = useParams()
@@ -29,37 +41,33 @@ export default function SessionsPage() {
         <PageContainer>
             Selecione o horário
             <div>
-                <SessionContainer>
-                    Sexta - 03/03/2023
+                 {sessao.map((novaSessao) =>
+                <SessionContainer key={novaSessao.id}>
+                    <a>{novaSessao.weekday} - {novaSessao.date} </a>
                     <ButtonsContainer>
-                        <button>14:00</button>
-                        <button>15:00</button>
-                    </ButtonsContainer>
-                </SessionContainer>
+                    
+                    {novaSessao.showtimes.map((s) => 
+                    <>
+                    <Link key={s.id} to={"/seatspage"}> 
 
-                <SessionContainer>
-                    Sexta - 03/03/2023
-                    <ButtonsContainer>
-                        <button>14:00</button>
-                        <button>15:00</button>
-                    </ButtonsContainer>
-                </SessionContainer>
+                    <button>{s.name}</button>
 
-                <SessionContainer>
-                    Sexta - 03/03/2023
-                    <ButtonsContainer>
-                        <button>14:00</button>
-                        <button>15:00</button>
+                    </Link>
+                    </>
+                    )                  
+                    }
                     </ButtonsContainer>
                 </SessionContainer>
+                )}
+
             </div>
 
             <FooterContainer>
                 <div>
-                    <img src={"https://br.web.img2.acsta.net/pictures/22/05/16/17/59/5165498.jpg"} alt="poster" />
+                    <img src={dados.posterURL}  alt={dados.title} />
                 </div>
                 <div>
-                    <p>Tudo em todo lugar ao mesmo tempo</p>
+                    <p>{dados.title}</p>
                 </div>
             </FooterContainer>
 

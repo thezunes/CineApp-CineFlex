@@ -4,15 +4,12 @@ import { useState, useEffect } from 'react'
 import { Link, useParams } from "react-router-dom";
 
 
-
+ 
 export default function HomePage(props) {
 
     const {idFilme} = useParams()
     const [listaFilmes, setListaFilmes] = useState([]);
 
-    function teste() {
-        console.log("teste")
-    }
 
 
     useEffect(() => { 
@@ -20,23 +17,21 @@ export default function HomePage(props) {
         promise.then((res) => { 
         setListaFilmes(res.data)
         res.data = props.filmeSelecionado
-        console.log(props.filmeSelecionado)
+       
          })
         }, [])
-   
-    
+     
     return (
         <PageContainer>
             Selecione o filme
 
             <ListContainer>
-                { listaFilmes.map((img) => 
-                <Link to={`/sessions/${img.id}`} >
+                { listaFilmes.map((dados) => 
+                <Link  to={`/sessions/${dados.id}` } key={dados.id} >
                 
                 <MovieContainer>
-                    <img onClick={teste} src={img.posterURL} alt={img.title} key={img.id} />
-
-                </MovieContainer>
+                    <img  src={dados.posterURL} alt={dados.title}  />
+                 </MovieContainer>
 
                 </Link>
                 )}
