@@ -18,6 +18,7 @@ export default function SeatsPage(props) {
     const [cpf, setCpf] = useState('') //ARMAZENA O CPF DO COMPRADOR
     const [nomeComprador, setNomeComprador] = useState('') //ARMAZENA O NOME DO COMPRADOR
     const [idArray,setIdArray] = useState([]);
+    const [idAssento, setIdAssento] = useState([]); //ARMAZENA OS IDS DOS ASSENTOS SELECIONADOS
 
     const text = "";
  
@@ -39,13 +40,14 @@ export default function SeatsPage(props) {
         }, [])
 
 
-    function assentoSelecionado(numeroAssento){
+    function assentoSelecionado(numeroAssento, id){
 
         const disponibilidade = numeroAssento - 1;
 
         if (assentos[disponibilidade].isAvailable) {
             if (!assentoSelecionadoInfo.includes(numeroAssento)) {
               setAssentoSelecionadoInfo([...assentoSelecionadoInfo, numeroAssento]);
+              setIdAssento([...idAssento, id])
             } else {
               const novoAssentoSelecionadoInfo = [...assentoSelecionadoInfo];
               let posicao = novoAssentoSelecionadoInfo.indexOf(numeroAssento);
@@ -76,25 +78,24 @@ export default function SeatsPage(props) {
     
         function finalizar(){
 
-            const objeto = {ids: idArray , name: nomeComprador, cpf: cpf}
+            const objeto = {ids: idAssento , name: nomeComprador, cpf: cpf}
             const url = "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many"
 
             const promise = axios.post(url, objeto);
             promise.then(() => console.log("Pedido finalizado com sucesso"))
             promise.catch((err) => console.log(err.response.data))
 
-        
-
             props.setLugarEscolhido(assentoSelecionadoInfo);
             props.setCpfFinal(cpf)
             props.setNomeFinal(nomeComprador)
             props.setFilmeFinal(infoFilme.title)
             props.setSessaoHoraFinal(assentosFull.name)
-            props.setSessaoDataFinal(infoSessao.weekday)
+            props.setSessaoDataFinal(infoSessao.date)
             assentoSelecionadoInfo.map((as) => setIdArray(...idArray, assentos[as-1].id))
+            console.log(objeto)
          }
 
-
+         
          
 
     return (
@@ -105,7 +106,7 @@ export default function SeatsPage(props) {
 
                 <SeatItem 
                 disponivel={a.isAvailable}
-                onClick={() => assentoSelecionado(a.name)}
+                onClick={() => assentoSelecionado(a.name, a.id)}
                 data-test="seat"
                 state = {!a.isAvailable ? "indisponivel" : (assentoSelecionadoInfo.includes(a.name) ? "selecionado" : "diponivel")}
                 
@@ -144,9 +145,9 @@ export default function SeatsPage(props) {
                 CPF do Comprador:
                 <input data-test="client-cpf" value={cpf} onChange={cpfComprador} maxlength="14" placeholder="Digite seu CPF..." required />
 
-                 <Link to="/sucesso ">
+                 {/* <Link to="/sucesso "> */}
                 <button data-test="book-seat-btn" onClick={finalizar}>Reservar Assento(s)</button>
-                </Link>
+                {/* </Link> */}
 
             </FormContainer>
 
