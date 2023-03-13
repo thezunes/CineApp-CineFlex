@@ -48,9 +48,11 @@ export default function SessionsPage() {
                     
                     {novaSessao.showtimes.map((s) => 
                     <>
-                    <Link data-test="showtime"  key={s.id} to={`/seatspage/${s.id}`}> 
+                    <Link data-test="showtime"  key={s.id} to={`/assentos/${s.id}`}> 
 
                     <button>{s.name}</button>
+
+
 
                     </Link>
                     </>

@@ -27,7 +27,7 @@ export default function App() {
             <Routes> 
             
             <Route path="/" element={<HomePage filmeSelecionado = {filmeSelecionado}/>}/>
-            <Route path="/seatspage/:idSessao2" element={<SeatsPage 
+            <Route path="/assentos/:idSessao2" element={<SeatsPage 
             lugarEscolhido = {lugarEscolhido} 
             setLugarEscolhido={setLugarEscolhido}
             
@@ -41,8 +41,8 @@ export default function App() {
             setSessaoDataFinal = {setSessaoDataFinal}
             /> }/>
 
-            <Route path="/sessions/:idFilme" element={<SessionsPage setLugarEscolhido={setLugarEscolhido} /> }/>
-            <Route path="/final" element={<SuccessPage lugarEscolhido={lugarEscolhido} 
+            <Route path="/sessoes/:idFilme" element={<SessionsPage setLugarEscolhido={setLugarEscolhido} /> }/>
+            <Route path="/sucesso" element={<SuccessPage lugarEscolhido={lugarEscolhido} 
              nomeFinal = {nomeFinal}
              cpfFinal = {cpfFinal} 
              filmeFinal = {filmeFinal} 
