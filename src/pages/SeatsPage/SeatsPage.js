@@ -43,20 +43,19 @@ export default function SeatsPage(props) {
 
         const disponibilidade = numeroAssento - 1;
 
-        if(assentos[disponibilidade].isAvailable){
-
-            if(!assentoSelecionadoInfo.includes(numeroAssento)){
-                setAssentoSelecionadoInfo([...assentoSelecionadoInfo, numeroAssento])
-                } else {
-                let posicao = assentoSelecionadoInfo.indexOf(numeroAssento)
-                assentoSelecionadoInfo.splice(posicao, 1);
-                }
-        } else {
-           alert("Esse assento não está disponível")
-
+        if (assentos[disponibilidade].isAvailable) {
+            if (!assentoSelecionadoInfo.includes(numeroAssento)) {
+              setAssentoSelecionadoInfo([...assentoSelecionadoInfo, numeroAssento]);
+            } else {
+              const novoAssentoSelecionadoInfo = [...assentoSelecionadoInfo];
+              let posicao = novoAssentoSelecionadoInfo.indexOf(numeroAssento);
+              novoAssentoSelecionadoInfo.splice(posicao, 1);
+              setAssentoSelecionadoInfo(novoAssentoSelecionadoInfo);
+            }
+          } else {
+            alert('Esse assento não está disponível');
+          }
         }
-
-    }
 
         function cpfComprador(c) {
             
@@ -95,7 +94,7 @@ export default function SeatsPage(props) {
             assentoSelecionadoInfo.map((as) => setIdArray(...idArray, assentos[as-1].id))
          }
 
- 
+
          
 
     return (
