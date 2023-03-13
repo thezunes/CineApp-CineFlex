@@ -19,12 +19,6 @@ export default function App() {
     const [sessaoHoraFinal, setSessaoHoraFinal] = useState("");
     const [sessaoDataFinal, setSessaoDataFinal] = useState("");
 
-
-
-
-
-    console.log(lugarEscolhido)
-
     return (
         <BrowserRouter>
 

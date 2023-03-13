@@ -1,7 +1,7 @@
 import styled from "styled-components"
  import axios from 'axios'
 import { useState, useEffect } from 'react'
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 
 export default function SeatsPage(props) {
 
@@ -17,7 +17,10 @@ export default function SeatsPage(props) {
     const [assentoSelecionadoInfo,setAssentoSelecionadoInfo] = useState([]) //ARRAY QUE ARMAZENA OS ASSENTOS SELECIONADOS
     const [cpf, setCpf] = useState('') //ARMAZENA O CPF DO COMPRADOR
     const [nomeComprador, setNomeComprador] = useState('') //ARMAZENA O NOME DO COMPRADOR
-     const text = "";
+    const [idArray,setIdArray] = useState([]);
+
+    const text = "";
+ 
 
     useEffect(() => { 
         const url = `https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSessao}/seats`
@@ -55,7 +58,6 @@ export default function SeatsPage(props) {
 
     }
 
-
         function cpfComprador(c) {
             
             let value = c.target.value;
@@ -74,18 +76,28 @@ export default function SeatsPage(props) {
 
     
         function finalizar(){
+
+            const objeto = {ids: idArray , name: nomeComprador, cpf: cpf}
+            const url = "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many"
+
+            const promise = axios.post(url, objeto);
+            promise.then(() => console.log("Pedido finalizado com sucesso"))
+            promise.catch((err) => console.log(err.response.data))
+
+        
+
             props.setLugarEscolhido(assentoSelecionadoInfo);
             props.setCpfFinal(cpf)
             props.setNomeFinal(nomeComprador)
             props.setFilmeFinal(infoFilme.title)
             props.setSessaoHoraFinal(assentosFull.name)
             props.setSessaoDataFinal(infoSessao.weekday)
-            
-            console.log(props.lugarEscolhido)
-        }
-          
+            assentoSelecionadoInfo.map((as) => setIdArray(...idArray, assentos[as-1].id))
+         }
 
  
+         
+
     return (
         <PageContainer>
             Selecione o(s) assento(s)
@@ -133,10 +145,8 @@ export default function SeatsPage(props) {
                 CPF do Comprador:
                 <input data-test="client-cpf" value={cpf} onChange={cpfComprador} maxlength="14" placeholder="Digite seu CPF..." required />
 
-                <Link to={'/final'}> 
-                
+                 <Link to="/final">
                 <button data-test="book-seat-btn" onClick={finalizar}>Reservar Assento(s)</button>
-
                 </Link>
 
             </FormContainer>
@@ -198,8 +208,8 @@ const CaptionContainer = styled.div`
     margin: 20px;
 `
 const CaptionCircle = styled.div`
-    border: 2px ${props => props.text === "selecionado" ? "#0E7D71;" : props.text === "indisponivel" ? "#7B8B99;" : "#F7C52B;"};         // Essa cor deve mudar
-    background-color: ${props => props.text === "selecionado" ? "#1AAE9E" : props.text === "indisponivel" ? "#FBE192" : "#C3CFD9"};    // Essa cor deve mudar
+    border: 1px solid ${props => props.text === "selecionado" ? "#0E7D71;" : props.text === "indisponivel" ? "#F7C52B;" : "#7B8B99;"};         
+    background-color: ${props => props.text === "selecionado" ? "#1AAE9E" : props.text === "indisponivel" ? "#FBE192" : "#C3CFD9"};    
     height: 25px;
     width: 25px;
     border-radius: 25px;
@@ -216,16 +226,12 @@ const CaptionItem = styled.div`
 `
 const SeatItem = styled.div`
 
-
-background-color: ${props => !props.disponivel ? "#FBE192" : (props.state === "disponivel" ? "#1AAE9E" : (props.state === "selecionado" ? "#1AAE9E" : "#C3CFD9"))};
+    background-color: ${props => !props.disponivel ? "#FBE192" : 
+    (props.state === "disponivel" ? "#1AAE9E" : (props.state === "selecionado" ? "#1AAE9E" : "#C3CFD9"))};
  
-border: 1px solid ${props => !props.disponivel ? "#F7C52B" : (props.state === "disponivel" ? "#F7C52B" : (props.state === "selecionado" ? "#0E7D71" : "#808F9D"))};   
+    border: 1px solid ${props => !props.disponivel ? "#F7C52B" :
+    (props.state === "disponivel" ? "#F7C52B" : (props.state === "selecionado" ? "#0E7D71" : "#808F9D"))};   
 
-    // Essa cor deve mudar
-    
-    
-    
-    // Essa cor deve mudar
     height: 25px;
     width: 25px;
     border-radius: 25px;
