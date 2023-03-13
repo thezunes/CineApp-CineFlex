@@ -44,11 +44,11 @@ export default function SessionsPage() {
                  {sessao.map((novaSessao) =>
                 <SessionContainer data-test="movie-day" key={novaSessao.id}>
                     <a>{novaSessao.weekday} - {novaSessao.date} </a>
-                    <ButtonsContainer data-test="showtime">
+                    <ButtonsContainer >
                     
                     {novaSessao.showtimes.map((s) => 
                     <>
-                    <Link key={s.id} to={`/seatspage/${s.id}`}> 
+                    <Link data-test="showtime"  key={s.id} to={`/seatspage/${s.id}`}> 
 
                     <button>{s.name}</button>
 
