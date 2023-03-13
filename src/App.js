@@ -5,12 +5,25 @@ import SessionsPage from "./pages/SessionsPage/SessionsPage"
 import SuccessPage from "./pages/SuccessPage/SuccessPage"
 import axios from 'axios';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useState, useEffect } from 'react'
+
 
  const filmeSelecionado = [];
  
 export default function App() {
 
+    const [lugarEscolhido, setLugarEscolhido] = useState([]);
+    const [cpfFinal, setCpfFinal] = useState("");
+    const [nomeFinal, setNomeFinal] = useState("");
+    const [filmeFinal, setFilmeFinal] = useState("");
+    const [sessaoHoraFinal, setSessaoHoraFinal] = useState("");
+    const [sessaoDataFinal, setSessaoDataFinal] = useState("");
 
+
+
+
+
+    console.log(lugarEscolhido)
 
     return (
         <BrowserRouter>
@@ -20,10 +33,33 @@ export default function App() {
             <Routes> 
             
             <Route path="/" element={<HomePage filmeSelecionado = {filmeSelecionado}/>}/>
-            <Route path="/seatspage/:idSessao2" element={<SeatsPage/> }/>
-            <Route path="/sessions/:idFilme" element={<SessionsPage/> }/>
-            <Route path="/final" element={<SuccessPage/> }/>
+            <Route path="/seatspage/:idSessao2" element={<SeatsPage 
+            lugarEscolhido = {lugarEscolhido} 
+            setLugarEscolhido={setLugarEscolhido}
+            
+            nomeFinal = {nomeFinal} 
+            setNomeFinal = {setNomeFinal} 
+            cpfFinal = {cpfFinal} 
+            setCpfFinal = {setCpfFinal}
+            filmeFinal = {filmeFinal} 
+            setFilmeFinal = {setFilmeFinal}
+            setSessaoHoraFinal = {setSessaoHoraFinal}
+            setSessaoDataFinal = {setSessaoDataFinal}
+            /> }/>
 
+            <Route path="/sessions/:idFilme" element={<SessionsPage setLugarEscolhido={setLugarEscolhido} /> }/>
+            <Route path="/final" element={<SuccessPage lugarEscolhido={lugarEscolhido} 
+             nomeFinal = {nomeFinal}
+             cpfFinal = {cpfFinal} 
+             filmeFinal = {filmeFinal} 
+             setSessaoHoraFinal = {setSessaoHoraFinal}
+             setSessaoDataFinal = {setSessaoDataFinal}
+             sessaoHoraFinal = {sessaoHoraFinal}
+             sessaoDataFinal = {sessaoDataFinal}
+             setFilmeFinal = {setFilmeFinal}
+            /> }/>
+            
+            
             </Routes>
             
               

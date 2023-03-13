@@ -3,24 +3,35 @@ import styled from "styled-components"
 import { useState, useEffect } from 'react'
 import { Link, useParams } from "react-router-dom";
 
-export default function SeatsPage() {
+export default function SeatsPage(props) {
 
 
+    const [color, setColor] = useState('');
     const {idSessao2} = useParams()
     const path=window.location.pathname;
     const parts = path.split('/');  
     const idSessao = parts[2];
-    const [assentos, setAssentos] = useState([])
+    const [assentosFull, setAssentosFull] = useState([])
     const [infoFilme, setInfoFilme] = useState([])
     const [infoSessao, setInfoSessao] = useState([])
+    const [assentos, setAssentos] = useState([])
+    const [assentoSelecionadoInfo,setAssentoSelecionadoInfo] = useState([]) //ARRAY QUE ARMAZENA OS ASSENTOS SELECIONADOS
+    const [cpf, setCpf] = useState('') //ARMAZENA O CPF DO COMPRADOR
+    const [nomeComprador, setNomeComprador] = useState('') //ARMAZENA O NOME DO COMPRADOR
 
 
+    const [buttonColor, setButtonColor] = useState('blue');
 
+    const handleClick = () => {
+      setButtonColor('#000000')
+        ;
+    };
 
     useEffect(() => { 
         const url = `https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSessao}/seats`
         const promise = axios.get(url)
-        promise.then(res => setAssentos(res.data))
+        promise.then(res => setAssentosFull(res.data))
+        promise.then(res => setAssentos(res.data.seats))
         promise.catch(err => alert(`Houve um erro na requisição dos dados. ${err}`))
         }, [])
 
@@ -32,19 +43,60 @@ export default function SeatsPage() {
         promise.catch(err => alert(`Houve um erro na requisição dos dados. ${err}`))
         }, [])
 
- 
+
+        function assentoSelecionado(numeroAssento){
+
+        if(!assentoSelecionadoInfo.includes(numeroAssento)){
+            setAssentoSelecionadoInfo([...assentoSelecionadoInfo, numeroAssento])
+        } else {
+            let posicao = assentoSelecionadoInfo.indexOf(numeroAssento)
+            assentoSelecionadoInfo.splice(posicao, 1);
+        }
+        }
+
+
+        function cpfComprador(c) {
+            
+            let value = c.target.value;
+            value = value.replace(/\D/g, ''); // Remove caracteres não numéricos
+            value = value.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o primeiro ponto
+            value = value.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o segundo ponto
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Adiciona o traço
+            c.target.value = value;
+            setCpf(value);
+
+          }
+
+        function nomeDoComprador(n) {
+            setNomeComprador(n.target.value);
+          }
+
+    
+        function finalizar(){
+            props.setLugarEscolhido(assentoSelecionadoInfo);
+            props.setCpfFinal(cpf)
+            props.setNomeFinal(nomeComprador)
+            props.setFilmeFinal(infoFilme.title)
+            props.setSessaoHoraFinal(assentosFull.name)
+            props.setSessaoDataFinal(infoSessao.weekday)
+            
+            console.log(props.lugarEscolhido)
+        }
+          
+
  
     return (
         <PageContainer>
             Selecione o(s) assento(s)
-
             <SeatsContainer>
-                <SeatItem>01</SeatItem>
-                <SeatItem>02</SeatItem>
-                <SeatItem>03</SeatItem>
-                <SeatItem>04</SeatItem>
-                <SeatItem>05</SeatItem>
-            </SeatsContainer>
+            {assentos.map((a) => 
+
+                <SeatItem color={buttonColor} onClick={handleClick} onClick={ () => assentoSelecionado(a.name)} >{a.name}</SeatItem>
+
+            )}
+                        </SeatsContainer>
+
+            
 
             <CaptionContainer>
                 <CaptionItem>
@@ -61,14 +113,21 @@ export default function SeatsPage() {
                 </CaptionItem>
             </CaptionContainer>
 
+ 
+
             <FormContainer>
                 Nome do Comprador:
-                <input placeholder="Digite seu nome..." />
+                <input value={nomeComprador} onChange={nomeDoComprador} placeholder="Digite seu nome..." required />
 
                 CPF do Comprador:
-                <input placeholder="Digite seu CPF..." />
+                <input  value={cpf} onChange={cpfComprador} maxlength="14" placeholder="Digite seu CPF..." required />
 
-                <button>Reservar Assento(s)</button>
+                <Link to={'/final'}> 
+                
+                <button onClick={finalizar}>Reservar Assento(s)</button>
+
+                </Link>
+
             </FormContainer>
 
             <FooterContainer>
@@ -77,7 +136,7 @@ export default function SeatsPage() {
                 </div>
                 <div>
                     <p>{infoFilme.title}</p>
-                    <p>{infoSessao.weekday} - {assentos.name}</p>
+                    <p>{infoSessao.weekday} - {assentosFull.name}</p>
                 </div>
             </FooterContainer>
 
@@ -146,7 +205,7 @@ const CaptionItem = styled.div`
 `
 const SeatItem = styled.div`
     border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
+    background-color: ${props => props.color};    // Essa cor deve mudar
     height: 25px;
     width: 25px;
     border-radius: 25px;
@@ -167,7 +226,6 @@ const FooterContainer = styled.div`
     font-size: 20px;
     position: fixed;
     bottom: 0;
-
     div:nth-child(1) {
         box-shadow: 0px 2px 4px 2px #0000001A;
         border-radius: 3px;
@@ -182,7 +240,6 @@ const FooterContainer = styled.div`
             padding: 8px;
         }
     }
-
     div:nth-child(2) {
         display: flex;
         flex-direction: column;
