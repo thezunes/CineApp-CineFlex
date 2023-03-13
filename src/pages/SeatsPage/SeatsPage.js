@@ -145,9 +145,9 @@ export default function SeatsPage(props) {
                 CPF do Comprador:
                 <input data-test="client-cpf" value={cpf} onChange={cpfComprador} maxlength="14" placeholder="Digite seu CPF..." required />
 
-                 {/* <Link to="/sucesso "> */}
+                 <Link to="/sucesso ">
                 <button data-test="book-seat-btn" onClick={finalizar}>Reservar Assento(s)</button>
-                {/* </Link> */}
+                </Link>
 
             </FormContainer>
 
