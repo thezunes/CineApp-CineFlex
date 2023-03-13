@@ -6,26 +6,18 @@ import { Link, useParams } from "react-router-dom";
 export default function SeatsPage(props) {
 
 
-    const [color, setColor] = useState('');
-    const {idSessao2} = useParams()
+    
     const path=window.location.pathname;
     const parts = path.split('/');  
     const idSessao = parts[2];
     const [assentosFull, setAssentosFull] = useState([])
     const [infoFilme, setInfoFilme] = useState([])
     const [infoSessao, setInfoSessao] = useState([])
-    const [assentos, setAssentos] = useState([])
+    const [assentos, setAssentos] = useState([]) //ARMAZENA OS ASSENTOS DA ARRAY QUE FOI RECEBIDA PELA API
     const [assentoSelecionadoInfo,setAssentoSelecionadoInfo] = useState([]) //ARRAY QUE ARMAZENA OS ASSENTOS SELECIONADOS
     const [cpf, setCpf] = useState('') //ARMAZENA O CPF DO COMPRADOR
     const [nomeComprador, setNomeComprador] = useState('') //ARMAZENA O NOME DO COMPRADOR
-
-
-    const [buttonColor, setButtonColor] = useState('blue');
-
-    const handleClick = () => {
-      setButtonColor('#000000')
-        ;
-    };
+     const text = "";
 
     useEffect(() => { 
         const url = `https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSessao}/seats`
@@ -44,15 +36,24 @@ export default function SeatsPage(props) {
         }, [])
 
 
-        function assentoSelecionado(numeroAssento){
+    function assentoSelecionado(numeroAssento){
 
-        if(!assentoSelecionadoInfo.includes(numeroAssento)){
-            setAssentoSelecionadoInfo([...assentoSelecionadoInfo, numeroAssento])
+        const disponibilidade = numeroAssento - 1;
+
+        if(assentos[disponibilidade].isAvailable){
+
+            if(!assentoSelecionadoInfo.includes(numeroAssento)){
+                setAssentoSelecionadoInfo([...assentoSelecionadoInfo, numeroAssento])
+                } else {
+                let posicao = assentoSelecionadoInfo.indexOf(numeroAssento)
+                assentoSelecionadoInfo.splice(posicao, 1);
+                }
         } else {
-            let posicao = assentoSelecionadoInfo.indexOf(numeroAssento)
-            assentoSelecionadoInfo.splice(posicao, 1);
+           alert("Esse assento não está disponível")
+
         }
-        }
+
+    }
 
 
         function cpfComprador(c) {
@@ -91,24 +92,34 @@ export default function SeatsPage(props) {
             <SeatsContainer>
             {assentos.map((a) => 
 
-                <SeatItem color={buttonColor} onClick={handleClick} onClick={ () => assentoSelecionado(a.name)} >{a.name}</SeatItem>
+                <SeatItem 
+                disponivel={a.isAvailable}
+                onClick={() => assentoSelecionado(a.name)}
+
+                state = {!a.isAvailable ? "indisponivel" : (assentoSelecionadoInfo.includes(a.name) ? "selecionado" : "diponivel")}
+                
+                >{a.name}</SeatItem>
 
             )}
                         </SeatsContainer>
 
-            
+                        {/* disponivel={a.isAvailable}
+                state={!seat.isAvailable ? "indisponível" : (selectedSeats.includes(a.id) ? "selecionado" : "disponível")}
+                
+                } */}
+
 
             <CaptionContainer>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle text={text} text="selecionado" />
                     Selecionado
                 </CaptionItem>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle text={text} text="disponivel"/>
                     Disponível
                 </CaptionItem>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle text={text} text="indisponivel" />
                     Indisponível
                 </CaptionItem>
             </CaptionContainer>
@@ -132,7 +143,7 @@ export default function SeatsPage(props) {
 
             <FooterContainer data-test="footer">
                 <div>
-                    <img src={infoFilme.posterURL} alt="poster" />
+                    <img src={infoFilme.posterURL} alt={infoFilme.title} />
                 </div>
                 <div>
                     <p>{infoFilme.title}</p>
@@ -187,8 +198,8 @@ const CaptionContainer = styled.div`
     margin: 20px;
 `
 const CaptionCircle = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
+    border: 2px ${props => props.text === "selecionado" ? "#0E7D71;" : props.text === "indisponivel" ? "#7B8B99;" : "#F7C52B;"};         // Essa cor deve mudar
+    background-color: ${props => props.text === "selecionado" ? "#1AAE9E" : props.text === "indisponivel" ? "#FBE192" : "#C3CFD9"};    // Essa cor deve mudar
     height: 25px;
     width: 25px;
     border-radius: 25px;
@@ -204,8 +215,17 @@ const CaptionItem = styled.div`
     font-size: 12px;
 `
 const SeatItem = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: ${props => props.color};    // Essa cor deve mudar
+
+
+background-color: ${props => !props.disponivel ? "#FBE192" : (props.state === "disponivel" ? "#1AAE9E" : (props.state === "selecionado" ? "#1AAE9E" : "#C3CFD9"))};
+ 
+border: 1px solid ${props => !props.disponivel ? "#F7C52B" : (props.state === "disponivel" ? "#F7C52B" : (props.state === "selecionado" ? "#0E7D71" : "#808F9D"))};   
+
+    // Essa cor deve mudar
+    
+    
+    
+    // Essa cor deve mudar
     height: 25px;
     width: 25px;
     border-radius: 25px;
