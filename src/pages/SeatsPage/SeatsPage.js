@@ -117,20 +117,20 @@ export default function SeatsPage(props) {
 
             <FormContainer>
                 Nome do Comprador:
-                <input value={nomeComprador} onChange={nomeDoComprador} placeholder="Digite seu nome..." required />
+                <input data-test="client-name" value={nomeComprador} onChange={nomeDoComprador} placeholder="Digite seu nome..." required />
 
                 CPF do Comprador:
-                <input  value={cpf} onChange={cpfComprador} maxlength="14" placeholder="Digite seu CPF..." required />
+                <input data-test="client-cpf" value={cpf} onChange={cpfComprador} maxlength="14" placeholder="Digite seu CPF..." required />
 
                 <Link to={'/final'}> 
                 
-                <button onClick={finalizar}>Reservar Assento(s)</button>
+                <button data-test="book-seat-btn" onClick={finalizar}>Reservar Assento(s)</button>
 
                 </Link>
 
             </FormContainer>
 
-            <FooterContainer>
+            <FooterContainer data-test="footer">
                 <div>
                     <img src={infoFilme.posterURL} alt="poster" />
                 </div>

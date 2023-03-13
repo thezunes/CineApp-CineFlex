@@ -42,9 +42,9 @@ export default function SessionsPage() {
             Selecione o horário
             <div>
                  {sessao.map((novaSessao) =>
-                <SessionContainer key={novaSessao.id}>
+                <SessionContainer data-test="movie-day" key={novaSessao.id}>
                     <a>{novaSessao.weekday} - {novaSessao.date} </a>
-                    <ButtonsContainer>
+                    <ButtonsContainer data-test="showtime">
                     
                     {novaSessao.showtimes.map((s) => 
                     <>
@@ -62,7 +62,7 @@ export default function SessionsPage() {
 
             </div>
 
-            <FooterContainer>
+            <FooterContainer data-test="footer">
                 <div>
                     <img src={dados.posterURL}  alt={dados.title} />
                 </div>

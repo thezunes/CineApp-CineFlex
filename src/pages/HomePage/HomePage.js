@@ -7,6 +7,7 @@ import { Link, useParams } from "react-router-dom";
  
 export default function HomePage(props) {
 
+
     const {idFilme} = useParams()
     const [listaFilmes, setListaFilmes] = useState([]);
 
@@ -30,7 +31,7 @@ export default function HomePage(props) {
                 <Link  to={`/sessions/${dados.id}` } key={dados.id} >
                 
                 <MovieContainer>
-                    <img  src={dados.posterURL} alt={dados.title}  />
+                    <img data-test="movie" src={dados.posterURL} alt={dados.title}  />
                  </MovieContainer>
 
                 </Link>
