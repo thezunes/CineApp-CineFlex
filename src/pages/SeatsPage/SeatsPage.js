@@ -106,7 +106,7 @@ export default function SeatsPage(props) {
                 <SeatItem 
                 disponivel={a.isAvailable}
                 onClick={() => assentoSelecionado(a.name)}
-
+                data-test="seat"
                 state = {!a.isAvailable ? "indisponivel" : (assentoSelecionadoInfo.includes(a.name) ? "selecionado" : "diponivel")}
                 
                 >{a.name}</SeatItem>
